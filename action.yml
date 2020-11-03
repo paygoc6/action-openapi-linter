@@ -1,0 +1,29 @@
+name: 'Linter for OpenAPI'
+description: 'Checks if the OpenAPI specification is correct according to PayGo rulesets'
+inputs:
+  registry:
+    description: 'PayGo Docker registry'
+    required: true
+  path-in:
+    description: 'OpenAPI path'
+    required: false
+    default: 'target/swagger'
+  file-name:
+    description: 'OpenAPI file name'
+    required: false
+    default: 'swagger.json'
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        RESULT=`docker run -v ${{github.workspace}}/${{inputs.path-in}}:/swagger ${{inputs.registry}}/mario-pipeline:latest -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
+        COMMAND_RESULT=$?
+        if [[ $RESULT == file* ]] && [[ $COMMAND_RESULT -eq 0 ]]; then
+          echo "Valid yaml"
+        else
+          echo "Failed to validate yaml"
+          echo "$RESULT"
+          return 1
+        fi
+      shell: bash
+
