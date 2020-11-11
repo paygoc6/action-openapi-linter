@@ -4,6 +4,10 @@ inputs:
   registry:
     description: 'PayGo Docker registry'
     required: true
+  mario-version:
+    description: 'Mario Pipeline version to run linter'
+    required: false
+    default: 'v1'
   path-in:
     description: 'OpenAPI path'
     required: false
@@ -16,7 +20,7 @@ runs:
   using: "composite"
   steps:
     - run: |
-        RESULT=`docker run -v ${{github.workspace}}/${{inputs.path-in}}:/swagger ${{inputs.registry}}/mario-pipeline:latest -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
+        RESULT=`docker run -v ${{github.workspace}}/${{inputs.path-in}}:/swagger ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
         COMMAND_RESULT=$?
         if [[ $RESULT == file* ]] && [[ $COMMAND_RESULT -eq 0 ]]; then
           echo "Valid yaml"
