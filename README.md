@@ -25,6 +25,7 @@ You must login to the Docker registry beforehand to be able to use this action.
 The action supports the following inputs:
 
 - `registry` - (required) The registry URL to pull the image.
+- `mario-version` - (optional) Mario image version to run the linter. Default is `v1`.
 - `path-in` - (optional) Path where the OpenAPI file will be available on runtime. Default is `target/swagger`.
 - `file-name` - (optional) Name of the OpenAPI file. Default is `swagger.json`.
 
