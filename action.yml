@@ -20,7 +20,7 @@ runs:
   using: "composite"
   steps:
     - run: |
-        LOG_FILE=mario-pipeline-log-$(date '+%Y%m%d%H%M%S').txt
+        LOG_FILE=mario-pipeline-log.txt
         RESULT=`docker run -v ${{github.workspace}}/${{inputs.path-in}}:/swagger ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
         COMMAND_RESULT=$?
         echo $RESULT >> $LOG_FILE
