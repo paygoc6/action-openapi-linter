@@ -22,7 +22,7 @@ runs:
     - run: |
         RESULT=`docker run -v ${{github.workspace}}/${{inputs.path-in}}:/swagger ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
         COMMAND_RESULT=$?
-        echo $RESULT | sed 's_"_\\\"_g;s_^_{\"field\": \"_g;s_$_\"}_g' | tr '\n' ',' | sed 's_^_"[_g;s_,$_]"_g' >> mario-pipeline-log.txt
+        echo "$RESULT" > mario-pipeline-log.txt
         if [[ $RESULT == *"Valid OpenAPI file"* ]] && [[ $COMMAND_RESULT -eq 0 ]]; then
           echo "Valid yaml"
         else
