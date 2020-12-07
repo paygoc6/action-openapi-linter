@@ -20,7 +20,14 @@ runs:
   using: "composite"
   steps:
     - run: |
-        RESULT=`docker run -v ${{github.workspace}}/${{inputs.path-in}}:/swagger ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
+        RESULT=`docker run \
+          -v ${{github.workspace}}/${{inputs.path-in}}:/swagger \
+          -e GITHUB_REPOSITORY=$GITHUB_REPOSITORY \
+          -e GITHUB_WORKFLOW=$GITHUB_WORKFLOW \
+          -e GITHUB_REF=$GITHUB_REF \
+          ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} \
+          -s "/swagger/${{inputs.file-name}}" \
+          -o "/swagger"`
         COMMAND_RESULT=$?
         echo "$RESULT" > mario-pipeline-log.txt 2>&1
         if [[ $RESULT == *"Valid OpenAPI file"* ]] && [[ $COMMAND_RESULT -eq 0 ]]; then
