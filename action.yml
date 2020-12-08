@@ -20,12 +20,10 @@ runs:
   using: "composite"
   steps:
     - run: |
-        env > env-open-api.txt 2>&1
+        env > env-file 2>&1
         RESULT=`docker run \
+          --env-file ./env-file \
           -v ${{github.workspace}}/${{inputs.path-in}}:/swagger \
-          -e GITHUB_REPOSITORY=$GITHUB_REPOSITORY \
-          -e GITHUB_WORKFLOW=$GITHUB_WORKFLOW \
-          -e GITHUB_REF=$GITHUB_REF \
           ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} \
           -s "/swagger/${{inputs.file-name}}" \
           -o "/swagger"`
