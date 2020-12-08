@@ -20,8 +20,8 @@ runs:
   using: "composite"
   steps:
     - run: |
-        env > env-file 2>&1
-        RESULT=`docker run --env-file ./env-file \
+        env > env-file.list 2>&1
+        RESULT=`docker run --env-file env-file.list \
           -v ${{github.workspace}}/${{inputs.path-in}}:/swagger \
           ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} \
           -s "/swagger/${{inputs.file-name}}" \
