@@ -20,6 +20,7 @@ runs:
   using: "composite"
   steps:
     - run: |
+        env > env-open-api.txt 2>&1
         RESULT=`docker run \
           -v ${{github.workspace}}/${{inputs.path-in}}:/swagger \
           -e GITHUB_REPOSITORY=$GITHUB_REPOSITORY \
