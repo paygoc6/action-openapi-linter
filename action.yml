@@ -21,7 +21,7 @@ runs:
   steps:
     - run: |
         env > env-file.list 2>&1
-        RESULT=`docker run -v ${{github.workspace}}/${{inputs.path-in}}:/swagger --env-file env-file.list ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
+        RESULT=`docker run --env-file env-file.list -v ${{github.workspace}}/${{inputs.path-in}}:/swagger --env-file env-file.list ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
         COMMAND_RESULT=$?
         echo "$RESULT" > mario-pipeline-log.txt 2>&1
         if [[ $RESULT == *"Valid OpenAPI file"* ]] && [[ $COMMAND_RESULT -eq 0 ]]; then
