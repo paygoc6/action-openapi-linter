@@ -16,6 +16,15 @@ inputs:
     description: 'OpenAPI file name'
     required: false
     default: 'swagger.json'
+  elastic-host:
+    description: 'PayGo elastic search host'
+    required: true
+  elastic-user:
+    description: 'PayGo elastic search user'
+    required: true
+  elastic-pass:
+    description: 'PayGo elastic search password'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -36,5 +45,5 @@ runs:
     - run: |
         LOGS_NOW_MONTH=`date '+%Y-%m'`
         bb -f process-log.bb mario-pipeline-log.txt | jq . --raw-output > processed-logs.json
-        curl -XPOST -H "Content-Type: application/json" ${{ secrets.ELASTIC_HOST }}"/mario-pipeline-"$LOGS_NOW_MONTH"/_bulk/" -u ${{ secrets.MARIO_ELASTIC_USER }}:${{ secrets.MARIO_ELASTIC_PASS }} --data-binary @processed-logs.json
+        curl -XPOST -H "Content-Type: application/json" ${{ inputs.elastic-host }}"/mario-pipeline-"$LOGS_NOW_MONTH"/_bulk/" -u ${{ inputs.elastic-user }}:${{ inputs.elastic-pass }} --data-binary @processed-logs.json
       shell: bash
