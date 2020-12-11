@@ -24,9 +24,6 @@ runs:
         RESULT=`docker run --env-file env-file.list -v ${{github.workspace}}/${{inputs.path-in}}:/swagger --env-file env-file.list ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
         COMMAND_RESULT=$?
         echo "$RESULT" > mario-pipeline-log.txt 2>&1
-        LOGS_NOW_MONTH=`date '+%Y-%m'`
-        bb -f process-log.bb mario-pipeline-log.txt | jq . --raw-output > processed-logs.json
-        curl -XPOST -H "Content-Type: application/json" ${{ secrets.ELASTIC_HOST }}"/mario-pipeline-"$LOGS_NOW_MONTH"/_bulk/" -u ${{ secrets.MARIO_ELASTIC_USER }}:${{ secrets.MARIO_ELASTIC_PASS }} --data-binary @processed-logs.json
         if [[ $RESULT == *"Valid OpenAPI file"* ]] && [[ $COMMAND_RESULT -eq 0 ]]; then
           echo "Valid yaml"
         else
@@ -34,4 +31,10 @@ runs:
           echo "$RESULT"
           return 1
         fi
+      shell: bash
+
+    - run: |
+        LOGS_NOW_MONTH=`date '+%Y-%m'`
+        bb -f process-log.bb mario-pipeline-log.txt | jq . --raw-output > processed-logs.json
+        curl -XPOST -H "Content-Type: application/json" ${{ secrets.ELASTIC_HOST }}"/mario-pipeline-"$LOGS_NOW_MONTH"/_bulk/" -u ${{ secrets.MARIO_ELASTIC_USER }}:${{ secrets.MARIO_ELASTIC_PASS }} --data-binary @processed-logs.json
       shell: bash
