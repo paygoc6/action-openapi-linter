@@ -16,13 +16,27 @@ inputs:
     description: 'OpenAPI file name'
     required: false
     default: 'swagger.json'
+  elastic-host:
+    description: 'PayGo elastic search host'
+    required: true
+  elastic-user:
+    description: 'PayGo elastic search user'
+    required: true
+  elastic-pass:
+    description: 'PayGo elastic search password'
+    required: true
 runs:
   using: "composite"
   steps:
     - run: |
-        RESULT=`docker run -v ${{github.workspace}}/${{inputs.path-in}}:/swagger ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
+        env > env-file.list 2>&1
+        RESULT=`docker run --env-file env-file.list -v ${{github.workspace}}/${{inputs.path-in}}:/swagger --env-file env-file.list ${{inputs.registry}}/mario-pipeline:${{inputs.mario-version}} -s "/swagger/${{inputs.file-name}}" -o "/swagger"`
         COMMAND_RESULT=$?
         echo "$RESULT" > mario-pipeline-log.txt 2>&1
+        LOGS_NOW_MONTH=`date '+%Y-%m'`
+        bb -f process-log.bb mario-pipeline-log.txt | jq . --raw-output > processed-logs.json
+        curl -XPOST -H "Content-Type: application/json" ${{ inputs.elastic-host }}"/mario-pipeline-"$LOGS_NOW_MONTH"/_bulk/" -u ${{ inputs.elastic-user }}:${{ inputs.elastic-pass }} --data-binary @processed-logs.json 2>&1 curl-exec.txt
+        cat curl-exec.txt
         if [[ $RESULT == *"Valid OpenAPI file"* ]] && [[ $COMMAND_RESULT -eq 0 ]]; then
           echo "Valid yaml"
         else
