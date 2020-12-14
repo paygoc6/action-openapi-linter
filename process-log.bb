@@ -56,4 +56,4 @@
           (mapcat log->treated-plog)
           (map json/encode)
           (interpose "\n"))]
-  (apply str (sequence xf [*command-line-args*])))
+  (apply str (sequence xf *command-line-args*)))
