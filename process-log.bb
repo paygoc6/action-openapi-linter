@@ -54,5 +54,6 @@
           (map slurp)
           (mapcat str/split-lines)
           (mapcat log->treated-plog)
-          (map json/encode))]
-  (str/join "\n" (sequence xf *command-line-args*)))
+          (map json/encode)
+          (interpose "\n"))]
+  (apply str (sequence xf [*command-line-args*])))
