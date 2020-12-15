@@ -22,7 +22,6 @@
                 [k v])))
        (into {})))
 
-;; make test for this
 (defn log->plog [log]
   (let [[dtz-comma-info & rest-msg] (str/split log #" - ")
         [dtz-comma info]            (str/split dtz-comma-info #" ")]
