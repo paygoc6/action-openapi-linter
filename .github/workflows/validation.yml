@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Babashka (Clojure)
+      - name: Run Tests!
         uses: tzafrirben/babashka-docker-action@v1
         with:
           bb_cmd: bb -cp src --main test
