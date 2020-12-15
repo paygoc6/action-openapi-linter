@@ -34,7 +34,7 @@ runs:
         COMMAND_RESULT=$?
         echo "$RESULT" > mario-pipeline-log.txt 2>&1
         LOGS_NOW_MONTH=`date '+%Y-%m'`
-        bb -f process-log.bb mario-pipeline-log.txt | jq . --raw-output > processed-logs.json
+        bb -cp src --main core mario-pipeline-log.txt | jq . --raw-output > processed-logs.json
         curl -XPOST -H "Content-Type: application/json" ${{ inputs.elastic-host }}"/mario-pipeline-"$LOGS_NOW_MONTH"/_bulk/" -u ${{ inputs.elastic-user }}:${{ inputs.elastic-pass }} --data-binary @processed-logs.json 2>&1 curl-exec.txt
         cat curl-exec.txt
         if [[ $RESULT == *"Valid OpenAPI file"* ]] && [[ $COMMAND_RESULT -eq 0 ]]; then

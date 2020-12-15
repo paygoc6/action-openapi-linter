@@ -1,0 +1,21 @@
+name: CI Validation
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Tests!
+        uses: tzafrirben/babashka-docker-action@v1
+        with:
+          bb_cmd: bb -cp src --main test
