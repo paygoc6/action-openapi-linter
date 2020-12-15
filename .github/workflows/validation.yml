@@ -10,11 +10,12 @@ on:
 
 jobs:
   validation:
-    runs-on: paygo-clojure
+    runs-on: "composite"
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run tests
-        run: |
-          bb -cp src --main test
+      - name: Babashka (Clojure)
+        uses: tzafrirben/babashka-docker-action@v1
+        with:
+          bb_cmd: bb -cp src --main test
