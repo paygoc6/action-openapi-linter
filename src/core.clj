@@ -42,28 +42,11 @@
        (catch Throwable _
          {:raw raw-log})))
 
-#_(->> *command-line-args*
-       first
-       slurp
-       str/split-lines
-       (mapcat identity)
-       (mapcat log->treated-plog)
-       (map json/encode)
-       (str/join "\n"))
-
 (defn -main [& _args]
-  (->> *command-line-args*
-       first
-       slurp
-       str/split-lines
-       #_(mapcat identity)
-       #_(mapcat log->treated-plog)
-       #_(map json/encode)
-       #_(str/join "\n"))
-  #_(let [xf (comp
-              (map slurp)
-              (mapcat str/split-lines)
-              (mapcat log->treated-plog)
-              (map json/encode)
-              (interpose "\n"))]
-      (apply str (sequence xf *command-line-args*))))
+  (let [xf (comp
+            (map slurp)
+            (mapcat str/split-lines)
+            (mapcat log->treated-plog)
+            (map json/encode)
+            (interpose "\n"))]
+    (apply str (sequence xf *command-line-args*))))
