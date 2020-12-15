@@ -1,8 +1,8 @@
-#!/usr/bin/env bb
-(require '[clojure.string :as str]
-         '[clojure.edn :as edn]
-         '[cheshire.core :as json]
-         '[clojure.java.io :as io])
+(ns core
+  (:require [clojure.string :as str]
+            [clojure.edn :as edn]
+            [cheshire.core :as json]
+            [clojure.java.io :as io]))
 
 (defn dtz-comma->timestamp [dtz-comma]
   (-> dtz-comma
@@ -46,14 +46,24 @@
        first
        slurp
        str/split-lines
+       (mapcat identity)
        (mapcat log->treated-plog)
        (map json/encode)
        (str/join "\n"))
 
-(let [xf (comp
-          (map slurp)
-          (mapcat str/split-lines)
-          (mapcat log->treated-plog)
-          (map json/encode)
-          (interpose "\n"))]
-  (apply str (sequence xf *command-line-args*)))
+(defn -main [& _args]
+  (->> *command-line-args*
+       first
+       slurp
+       str/split-lines
+       #_(mapcat identity)
+       #_(mapcat log->treated-plog)
+       #_(map json/encode)
+       #_(str/join "\n"))
+  #_(let [xf (comp
+              (map slurp)
+              (mapcat str/split-lines)
+              (mapcat log->treated-plog)
+              (map json/encode)
+              (interpose "\n"))]
+      (apply str (sequence xf *command-line-args*))))
